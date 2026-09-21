@@ -1,16 +1,38 @@
-# GitHub Challenge
+# AIOps CI Challenge
 
-<img src="https://octodex.github.com/images/Professortocat_v2.png" align="right" height="200px" />
+This project contains a small Python service telemetry utility and a GitHub Actions CI setup for automated testing and coverage reporting.
 
-Hey there!
+## Project overview
 
-Your challenge is ready.
-Follow the instructions provided for this challenge and complete the required tasks in this repository.
+The repository includes:
+- utility functions for calculating circle area and Fibonacci numbers in [src/calculations.py](src/calculations.py)
+- anomaly detection and event-processing logic in [src](src)
+- automated tests in [tests](tests)
+- GitHub Actions workflows in [.github/workflows](.github/workflows)
 
-Make sure your work is committed and pushed to your repository before submission.
+## Local setup
 
-Good luck!
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+pip install pytest pytest-cov
+```
 
+## Run tests locally
+
+```bash
+PYTHONPATH=. pytest -ra --cov=src --cov-report=term-missing --cov-fail-under=50
+```
+
+## GitHub Actions
+
+The repository includes pull-request workflows for:
+- automated test execution
+- coverage generation and coverage threshold enforcement
+
+These workflows are defined in [.github/workflows/test.yml](.github/workflows/test.yml) and [.github/workflows/python-coverage.yml](.github/workflows/python-coverage.yml).
 
 ---
 
