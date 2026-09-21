@@ -1,8 +1,4 @@
-# System Modules
 import math
-
-# Installed Modules
-# - None
 
 
 def area_of_circle(radius):

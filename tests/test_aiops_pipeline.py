@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from src.anomaly_detector import AnomalyDetector
 from src.aiops_pipeline import run_pipeline
 from src.event_consumer import EventConsumer
@@ -70,3 +68,31 @@ def test_consumer_receives_event():
     messages = consumer.consume()
 
     assert len(messages) == 1
+
+
+def test_error_log_records_are_detected_as_anomalies():
+    detector = AnomalyDetector()
+
+    record = {
+        "timestamp": "2026-09-20T10:10:00",
+        "service": "auth-service",
+        "response_time_ms": 120,
+        "cpu_percent": 45,
+        "memory_percent": 48,
+        "log_level": "ERROR",
+        "message": "Authentication failed"
+    }
+
+    event = detector.detect(record)
+
+    assert event is not None
+    assert "Error log detected" in event["reasons"]
+
+
+def test_pipeline_consumes_published_anomaly_events():
+    result = run_pipeline("data/service_data.json")
+
+    assert result["records_processed"] == 10
+    assert len(result["anomalies_detected"]) == 2
+    assert len(result["events_consumed"]) == 2
+    assert len(result["anomalies_detected"]) == len(result["events_consumed"])
