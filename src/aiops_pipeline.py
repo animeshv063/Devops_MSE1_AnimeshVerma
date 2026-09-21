@@ -1,28 +1,32 @@
 import json
 
-from anomaly_detector import AnomalyDetector
-from event_consumer import EventConsumer
-from event_producer import EventProducer
-from event_topic import EventTopic
+try:
+    from src.anomaly_detector import AnomalyDetector
+    from src.event_consumer import EventConsumer
+    from src.event_producer import EventProducer
+    from src.event_topic import EventTopic
+except ModuleNotFoundError:  # pragma: no cover - script execution fallback
+    from anomaly_detector import AnomalyDetector
+    from event_consumer import EventConsumer
+    from event_producer import EventProducer
+    from event_topic import EventTopic
 
 
 def load_data(file_path):
+    """Load telemetry records from a JSON file."""
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
 
 def run_pipeline(file_path):
+    """Process all records, detect anomalies, and return published events."""
     data = load_data(file_path)
 
-    # INTENTIONAL ASSESSMENT ISSUE #2
-    producer_topic = EventTopic("service-events")
+    topic = EventTopic("anomaly-events")
 
     detector = AnomalyDetector()
-    producer = EventProducer(producer_topic)
-
-    # INTENTIONAL ASSESSMENT ISSUE #3
-    consumer_topic = EventTopic("anomaly-events")
-    consumer = EventConsumer(consumer_topic)
+    producer = EventProducer(topic)
+    consumer = EventConsumer(topic)
 
     detected_events = []
 
